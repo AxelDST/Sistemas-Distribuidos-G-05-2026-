@@ -1,7 +1,10 @@
 package nodo
 
 import (
+	"log"
 	"os"
+	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -22,14 +25,14 @@ func CargarConfiguracion() Configuracion {
 	broker := obtenerEnv("MQTT_BROKER", "localhost:1883")
 	intervalo := obtenerEnv("INTERVALO_SEGUNDOS", "5")
 
-	// TODO: validar que ID, Edificio y Aula no estén vacíos. 
-	// Validar que el intervalo sea un número positivo. Si no salir con error.
-	// Sugerencia: usar regexp para permitir solo letras, números y guiones.
-
-	duracion, err := time.ParseDuration(intervalo + "s")
-	if err != nil {
-		duracion = 5 * time.Second
+	validarCampo("NODO_ID", id)
+	validarCampo("NODO_EDIFICIO", edificio)
+	validarCampo("NODO_AULA", aula)
+	segundos, err := strconv.Atoi(intervalo)
+	if err != nil || segundos <= 0 {
+		log.Fatalf("INTERVALO_SEGUNDOS invalido: %q", intervalo)
 	}
+	duracion := time.Duration(segundos) * time.Second
 
 	return Configuracion{
 		ID:                id,
@@ -37,6 +40,16 @@ func CargarConfiguracion() Configuracion {
 		Aula:              aula,
 		BrokerMQTT:        broker,
 		IntervaloSegundos: duracion,
+	}
+}
+
+func validarCampo(nombre, valor string) {
+	if valor == "" {
+		log.Fatalf("%s no puede estar vacio", nombre)
+	}
+	permitido := regexp.MustCompile(`^[a-zA-Z0-9-]+$`)
+	if !permitido.MatchString(valor) {
+		log.Fatalf("%s invalido: %q", nombre, valor)
 	}
 }
 

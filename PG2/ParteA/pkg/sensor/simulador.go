@@ -24,7 +24,15 @@ func (s *Simulador) Leer() float64 {
 	// Usar rand.Float64() y mantener la nueva lectura dentro de un rango razonable (15°C - 35°C).
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.ultimaLectura = 22.0 + rand.Float64()*5.0
+	variacion := (rand.Float64() * 1.0) - 0.5
+	nueva := s.ultimaLectura + variacion
+	if nueva < 15.0 {
+		nueva = 15.0
+	}
+	if nueva > 35.0 {
+		nueva = 35.0
+	}
+	s.ultimaLectura = nueva
 	return s.ultimaLectura
 }
 
