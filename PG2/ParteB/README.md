@@ -52,12 +52,28 @@ make docker-down
 
 ## Requisitos completados
 
-- [ ] Servidor RPC con metodos `RegistrarLectura` y `ObtenerUltimaLectura`
-- [ ] Protocolo JSON en todos los mensajes (structs con tags json)
-- [ ] Cliente RPC con loop automatico de lecturas
-- [ ] Heartbeat UDP: servidor envia, cliente detecta timeout con estados `alive/suspect/dead`
-- [ ] Docker Compose con al menos 1 servidor + 2 clientes
+- [X] Servidor RPC con metodos `RegistrarLectura` y `ObtenerUltimaLectura`
+- [X] Protocolo JSON en todos los mensajes (structs con tags json)
+- [X] Cliente RPC con loop automatico de lecturas
+- [X] Heartbeat UDP: servidor envia, cliente detecta timeout con estados `alive/suspect/dead`
+- [X] Docker Compose con al menos 1 servidor + 2 clientes
 
 ## Captura de ejecucion
 
-_(Adjuntar log o captura de pantalla mostrando heartbeats, transiciones de estado y llamadas RPC)_
+Capturas de referencia:
+
+1. Funcionamiento local: servidor y cliente registrando lecturas por RPC.
+![Funcionamiento local](images/funcionamiento%20local.png)
+
+2. Caida local: servidor detenido y clientes mostrando errores de conexion/timeout.
+![Caida local](images/caida%20local.png)
+
+3. Servidor en Docker: contenedor levantado y listo para recibir conexiones.
+![Servidor Docker](images/servidor%20docker.png)
+
+4. Funcionamiento Docker: clientes y servidor intercambiando lecturas por RPC.
+![Funcionamiento Docker](images/funcionamiento%20docker.png)
+
+5. Caida Docker: servidor detenido y deteccion de fallo en clientes.
+![Caida Docker](images/caida%20docker.png)
+
