@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  nanomq:
+    image: emqx/nanomq:latest
+    container_name: nanomq-campus
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+    restart: unless-stopped
+
+  nodo1:
+    build: .
+    container_name: nodo-campus-1
+    environment:
+      - NODO_ID=nodo-01
+      - NODO_EDIFICIO=ingenieria
+      - NODO_AULA=lab3
+      - MQTT_BROKER=nanomq:1883
+      - INTERVALO_SEGUNDOS=5
+    depends_on:
+      - nanomq
+    ports:
+      - "15683:5683/udp"
+    profiles: ["nodos"]
+    restart: unless-stopped
+
+  nodo2:
+    build: .
+    container_name: nodo-campus-2
+    environment:
+      - NODO_ID=nodo-02
+      - NODO_EDIFICIO=ingenieria
+      - NODO_AULA=lab3
+      - MQTT_BROKER=nanomq:1883
+      - INTERVALO_SEGUNDOS=5
+    depends_on:
+      - nanomq
+    ports:
+      - "25683:5683/udp"
+    profiles: ["nodos"]
+    restart: unless-stopped

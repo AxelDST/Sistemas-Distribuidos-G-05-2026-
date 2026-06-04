@@ -1,0 +1,13 @@
+# Binarios
+servidor
+cliente
+bin/
+
+# Tests de correccion (no entregar)
+correccion_test.go
+
+# Go
+*.exe
+*.test
+*.out
+vendor/

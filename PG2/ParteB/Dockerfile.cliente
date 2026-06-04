@@ -1,0 +1,18 @@
+# Build stage
+FROM golang:1.22-alpine AS builder
+ENV GOTOOLCHAIN=auto
+WORKDIR /app
+COPY go.mod go.sum* ./
+RUN go mod download 2>/dev/null || true
+COPY . .
+RUN go build -o /cliente ./cmd/cliente
+
+# Runtime stage
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /cliente .
+ENV SERVIDOR=servidor:1234
+ENV NOMBRE=cliente-1
+ENV HEARTBEAT_PUERTO=:4002
+CMD ["./cliente"]

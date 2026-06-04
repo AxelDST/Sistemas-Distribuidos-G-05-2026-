@@ -1,0 +1,51 @@
+services:
+  servidor:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    ports:
+      - "11234:1234"
+      - "14001:4001/udp"
+    networks:
+      - sd-red
+    environment:
+      - RPC_PUERTO=:1234
+      - HEARTBEAT_PUERTO=:4001
+      - HEARTBEAT_DESTINO=cliente1:4002,cliente2:4002
+      - NODO_ID=servidor
+
+  cliente1:
+    build:
+      context: .
+      dockerfile: Dockerfile.cliente
+    networks:
+      - sd-red
+    environment:
+      - SERVIDOR=servidor:1234
+      - NOMBRE=cliente1
+      - HEARTBEAT_PUERTO=:4002
+    depends_on:
+      - servidor
+    profiles: ["clientes"]
+    stdin_open: true
+    tty: true
+
+  cliente2:
+    build:
+      context: .
+      dockerfile: Dockerfile.cliente
+    networks:
+      - sd-red
+    environment:
+      - SERVIDOR=servidor:1234
+      - NOMBRE=cliente2
+      - HEARTBEAT_PUERTO=:4002
+    depends_on:
+      - servidor
+    profiles: ["clientes"]
+    stdin_open: true
+    tty: true
+
+networks:
+  sd-red:
+    driver: bridge
