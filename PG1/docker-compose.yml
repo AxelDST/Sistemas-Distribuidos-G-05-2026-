@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  servidor:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    ports:
+      - "4000:4000"
+    networks:
+      - red-sd
+    environment:
+      - PUERTO=4000
+
+  cliente1:
+    build:
+      context: .
+      dockerfile: Dockerfile.cliente
+    depends_on:
+      - servidor
+    networks:
+      - red-sd
+    environment:
+      - SERVIDOR=servidor:4000
+      - NOMBRE=Cliente1
+    stdin_open: true
+    tty: true
+
+  cliente2:
+    build:
+      context: .
+      dockerfile: Dockerfile.cliente
+    depends_on:
+      - servidor
+    networks:
+      - red-sd
+    environment:
+      - SERVIDOR=servidor:4000
+      - NOMBRE=Cliente2
+    stdin_open: true
+    tty: true
+
+  cliente3:
+    build:
+      context: .
+      dockerfile: Dockerfile.cliente
+    depends_on:
+      - servidor
+    networks:
+      - red-sd
+    environment:
+      - SERVIDOR=servidor:4000
+      - NOMBRE=Cliente3
+    stdin_open: true
+    tty: true
+
+networks:
+  red-sd:
+    driver: bridge
